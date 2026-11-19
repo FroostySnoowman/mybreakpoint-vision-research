@@ -1,0 +1,5 @@
+model,set,frames,within_15cm,median_error_cm
+broadcast-trained,broadcast (TennisCourtDetector val),200,0.975,4.2
+broadcast-trained,amateur,359,0.251,604.3
+amateur-trained single frame,amateur,359,0.535,
+amateur-trained 12-frame median,amateur,359,0.619,12.2

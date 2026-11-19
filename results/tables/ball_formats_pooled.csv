@@ -1,0 +1,13 @@
+variant,resize,visible,within_8px,within_3px
+orig,bilinear,217,192,183
+orig,area,217,192,183
+hires,bilinear,217,192,184
+hires,area,217,193,184
+720p,bilinear,217,196,187
+720p,area,217,193,184
+lowbitrate,bilinear,217,147,140
+lowbitrate,area,217,138,129
+25fps,bilinear,217,185,149
+25fps,area,217,183,149
+dark,bilinear,217,176,169
+dark,area,217,181,173

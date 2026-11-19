@@ -1,0 +1,4 @@
+seed,kept_whole_shipped_decode,dead_removed_mean_shipped_decode,dead_removed_time_weighted_shipped_decode,kept_whole_nested,dead_removed_mean_nested
+0,0.942,0.504,0.5867,0.919,0.524
+1,0.942,0.484,0.5626,0.924,0.505
+2,0.939,0.481,0.5606,0.92,0.512

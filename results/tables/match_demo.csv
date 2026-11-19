@@ -1,0 +1,9 @@
+metric,value
+labeled_serve_segments,42
+kept_whole,1.0
+dead_time_removed_time_weighted,0.546
+video_seconds,1197.5
+kept_seconds,644.6
+predicted_segments,59
+predicted_segments_without_labeled_play,17
+court_locked_fraction,0.96

@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you refer to this work, please cite the technical report."
+title: "Ball Tracking, Court Calibration and Point Segmentation for Amateur Tennis Video on a Phone"
+type: software
+repository-code: "https://github.com/FroostySnoowman/mybreakpoint-vision-research"
+authors:
+  - family-names: Beal
+    given-names: Jacob
+    affiliation: "Break Point Technologies, LLC"
+keywords:
+  - computer vision
+  - sports analytics
+  - tennis
+  - ball tracking
+  - homography
+  - temporal action segmentation
+preferred-citation:
+  type: report
+  title: "Ball Tracking, Court Calibration and Point Segmentation for Amateur Tennis Video on a Phone"
+  authors:
+    - family-names: Beal
+      given-names: Jacob
+  institution:
+    name: "Break Point Technologies, LLC"
+  year: 2026
+  month: 11
+  notes: "Technical report. Independent R&D, not peer reviewed."

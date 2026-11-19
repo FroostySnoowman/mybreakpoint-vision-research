@@ -1,0 +1,61 @@
+# Court keypoint-detector training config, loaded with
+# `breakpoint_vision.config.load_court_model_config` and `load_court_train_config`.
+#
+# The `court` section sets model shape; `court_train` sets the training run.
+# The court model runs only every `court_stride` frames at inference, so it can
+# afford more channels than the ball model.
+court:
+  input_height: 288
+  input_width: 512
+  num_keypoints: 14
+  base_channels: 32
+  gaussian_sigma: 3.0
+  center_channel: true
+
+court_train:
+  # The LR decays to ~0 on a cosine schedule. Every keypoint feeds the homography,
+  # so a systematic sub-pixel bias becomes court-plane error.
+  epochs: 80
+  batch_size: 8
+  lr: 0.001
+  weight_decay: 0.00001
+  num_workers: 4
+  # Validation is held out by source video, not by frame: the dataset holds many
+  # frames of each court from one fixed camera, so a random frame split leaves the
+  # same court on both sides and kp_acc measures memorization rather than
+  # generalization to a new venue. `val_fraction` is a fraction of videos.
+  val_fraction: 0.1
+  checkpoint_dir: checkpoints/court
+  log_every: 25
+  # Keypoint peaks are sub-pixel refined. This is the metric checkpoint selection
+  # optimizes.
+  detection_tolerance_px: 4
+  seed: 1337
+
+# See configs/ball_train.yaml and breakpoint_vision/train/optim.py. Values are the
+# defaults, listed so the knobs are discoverable.
+optim:
+  warmup_fraction: 0.03
+  min_lr_fraction: 0.01
+  grad_clip_norm: 50.0
+  ema_decay: 0.999
+  use_ema: true
+
+# Training-time augmentation, applied to the train split only. On a mirror the 14
+# keypoints swap left/right (sl_near_left <-> sl_near_right, …): without that
+# the homography's point correspondences would be wrong, which is worse than not
+# flipping. Omit this block for the defaults; `enabled: false` disables it.
+augment:
+  enabled: true
+  horizontal_flip_prob: 0.5
+  brightness: 0.2
+  contrast: 0.2
+  saturation: 0.15
+  hue_degrees: 6.0
+  scale_jitter: 0.10
+  shift_fraction: 0.05
+  rotation_degrees: 4.0
+  noise_std: 0.012
+  blur_prob: 0.15
+  jpeg_prob: 0.15
+  jpeg_quality_min: 45

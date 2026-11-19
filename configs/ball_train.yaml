@@ -1,0 +1,67 @@
+# Ball-tracker training config, loaded with
+# `breakpoint_vision.config.load_ball_model_config` and `load_ball_train_config`.
+
+# Model size/shape. Whatever you train here is baked into the checkpoint and read
+# back automatically at inference time.
+#
+# Input width is an accuracy floor, not just a speed knob: the heatmap is the same
+# size as the input, so at 320 wide against a 1280-wide source one heatmap pixel
+# covers 4.0 source pixels, and 512 halves that to 2.5. Five input frames give the
+# network more samples of the ball's motion, the cue it uses to separate the ball
+# from static clutter.
+ball_model:
+  input_frames: 5
+  input_height: 288
+  input_width: 512
+  base_channels: 16
+
+ball_train:
+  # The LR decays to ~0 on a cosine schedule: the last epochs are where sub-pixel
+  # peak placement is refined.
+  epochs: 60
+  batch_size: 8
+  lr: 0.001
+  weight_decay: 0.00001
+  num_workers: 4
+  # Validation is held out by clip, not by frame: the dataset slides one window
+  # per frame, so neighboring windows share input_frames-1 frames and a random
+  # split would put near-identical windows on both sides. `val_fraction` is
+  # therefore a fraction of clips.
+  val_fraction: 0.1
+  checkpoint_dir: checkpoints/ball
+  log_every: 25
+  # The tolerance checkpoint selection optimizes.
+  detection_tolerance_px: 4
+  seed: 1337
+
+# Optimizer schedule and stabilization. Every value here is the default, listed so
+# the knobs are discoverable. See breakpoint_vision/train/optim.py.
+optim:
+  warmup_fraction: 0.03   # a fresh heatmap head predicts ~0.5 everywhere; do not
+                          # take that first large step at full LR
+  min_lr_fraction: 0.01   # cosine floor
+  grad_clip_norm: 50.0    # above the typical norm, so only outliers are clipped
+  ema_decay: 0.999        # the EMA weights are what get validated and checkpointed
+  use_ema: true
+
+# Training-time augmentation, applied to the train split only (validation always
+# sees clean data, or its loss is not comparable between epochs). One transform is
+# sampled per window and applied to every frame in it, and the ball label is moved
+# with the pixels. Omit this whole block to accept the defaults below; set
+# `enabled: false` to train without augmentation.
+#
+# Every value here is the default, listed so the knobs are discoverable.
+augment:
+  enabled: true
+  horizontal_flip_prob: 0.5   # mirrored courts are legitimate; vertical flips are not
+  brightness: 0.2
+  contrast: 0.2
+  saturation: 0.15
+  hue_degrees: 6.0
+  scale_jitter: 0.10          # keep small: the court must not leave the frame
+  shift_fraction: 0.05
+  rotation_degrees: 4.0       # a courtside camera is never far from level
+  noise_std: 0.012            # per-frame sensor noise (deliberately not shared)
+  blur_prob: 0.15
+  jpeg_prob: 0.15
+  jpeg_quality_min: 45
